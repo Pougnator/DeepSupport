@@ -1,0 +1,12 @@
+Launch a request
+curl -X POST "http://localhost:5000/parse" -d "{\"q\":\"I am looking for Chinese food\"}" | python -m json.tool
+
+Launch a server
+cd c:/Python/rasa_nlu
+python -m rasa_nlu.server --path projects 
+
+Train model:
+$ python -m rasa_nlu.train \
+    --config sample_configs/config_spacy.yml \
+    --data data/examples/rasa/demo-rasa.json \
+    --path projects
