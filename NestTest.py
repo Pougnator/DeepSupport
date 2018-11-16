@@ -23,6 +23,7 @@ def train (data, config_file, model_dir):
 
 def run():
     mystring = readmail()
+    print("Loading interpreter...")
     interpreter = Interpreter.load(r"C:\Python\rasa_nlu\projects\default\default\model_20180819-203551")
     
     #print(readmail)
