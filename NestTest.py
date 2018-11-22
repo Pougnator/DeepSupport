@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from GetEmail import readmail
+from BasicUI import UserSelectIntent
 # from rasa_nlu.converters import load_data
 from rasa_nlu.training_data import load_data
 from rasa_nlu.config import RasaNLUModelConfig
@@ -25,18 +26,28 @@ def run():
     mystring = readmail()
     print("Loading interpreter...")
     interpreter = Interpreter.load(r"C:\Python\rasa_nlu\projects\default\default\model_20180819-203551")
-    
-    #print(readmail)
-    
-    #print(interpreter.parse(readmail))
-    #utext = mystring.decode("utf-8")
-    #mytext = u'What is the reivew for the movie Die Hard?'
-    #print(mystring)
-    print(interpreter.parse(mystring))
+    #print(interpreter.parse(mystring))
+    return interpreter.parse(mystring)
+
+def getranking(mydict):
+    intent_ranking = mydict["intent_ranking"]  
+    print("Intent ranking obtained: ")
+    #i=0
+    for item in intent_ranking:
+        print(str(intent_ranking.index(item)) + " " + item["name"])
+        #i = i+1
+    return list(intent_ranking)
+
     
 if __name__ == '__main__':
    # train(r"C:\Python\rasa_nlu\data\examples\rasa\myTestData2.json", r"C:\Python\rasa_nlu\sample_configs\config_spacy.yml", './models/nlu')
-    run()
+    mydict = run()
+    ranking = getranking(mydict)
+    choice = int(UserSelectIntent())
+    print(ranking)
+    print(type(ranking))
+    print ("You have confirmed the intent: " + str(ranking.pop(choice)["name"]))
+
 
 
 
