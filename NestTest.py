@@ -5,6 +5,8 @@ from __future__ import unicode_literals
 
 from GetEmail import readmail
 from BasicUI import UserSelectIntent
+from ProcessTrainingData import AppendTrainingData
+from ProcessTrainingData import PrepareData
 # from rasa_nlu.converters import load_data
 from rasa_nlu.training_data import load_data
 from rasa_nlu.config import RasaNLUModelConfig
@@ -12,6 +14,7 @@ from rasa_nlu.config import RasaNLUModelConfig
 from rasa_nlu.model import Trainer, Metadata, Interpreter
 from rasa_nlu import config
 import json
+import logging
 from pprint import pprint
 
 
@@ -27,27 +30,28 @@ def run():
     print("Loading interpreter...")
     interpreter = Interpreter.load(r"C:\Python\rasa_nlu\projects\default\default\model_20180819-203551")
     #print(interpreter.parse(mystring))
-    return interpreter.parse(mystring)
+    return interpreter.parse(mystring), mystring
 
 def getranking(mydict):
     intent_ranking = mydict["intent_ranking"]  
     print("Intent ranking obtained: ")
-    #i=0
     for item in intent_ranking:
-        print(str(intent_ranking.index(item)) + " " + item["name"])
-        #i = i+1
+        print(str(intent_ranking.index(item)) + " " + item["name"] + " confidence: " + str(item["confidence"]))
     return list(intent_ranking)
-
+    
     
 if __name__ == '__main__':
    # train(r"C:\Python\rasa_nlu\data\examples\rasa\myTestData2.json", r"C:\Python\rasa_nlu\sample_configs\config_spacy.yml", './models/nlu')
-    mydict = run()
+    logging.basicConfig(level = logging.DEBUG)
+    mydict, strdata = run()
     ranking = getranking(mydict)
     choice = int(UserSelectIntent())
     print(ranking)
     print(type(ranking))
-    print ("You have confirmed the intent: " + str(ranking.pop(choice)["name"]))
-
+    strchoice = str(ranking.pop(choice)["name"])
+    print ("You have confirmed the intent: " + strchoice)
+    mylist = PrepareData(strdata, strchoice)
+    AppendTrainingData(mylist)
 
 
 

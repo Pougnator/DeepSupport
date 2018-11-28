@@ -1,4 +1,5 @@
 import json
+import logging
 from pprint import pprint
 
 #name = input("Enter a name: ")
@@ -32,6 +33,7 @@ def AppendTrainingData(dataList):
     myfile = open(write_file_path,'w', encoding='utf-8-sig', errors='ignore')
     json.dump(mydata, myfile, ensure_ascii=True)
     myfile.close()
+    logging.info("Training datafile appended")
 
 if __name__ == '__main__':
     mybody = "CuirMou"
