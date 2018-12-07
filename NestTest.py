@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from GetEmail import readmail
+from answer_analyser import isFromApp
 from BasicUI import UserSelectIntent
 from ProcessTrainingData import AppendTrainingData
 from ProcessTrainingData import PrepareData
@@ -26,7 +27,9 @@ def train (data, config_file, model_dir):
     model_directory = trainer.persist(trainer.persist(r"C:\Python\rasa_nlu\projects\default\default"))
 
 def run():
-    mystring = readmail()
+    status, mystring = isFromApp(readmail())
+    if status==True:
+        logging.info("Email from app")
     print("Loading interpreter...")
     interpreter = Interpreter.load(r"C:\Python\rasa_nlu\projects\default\default\model_20180819-203551")
     #print(interpreter.parse(mystring))
@@ -42,7 +45,7 @@ def getranking(mydict):
     
 if __name__ == '__main__':
    # train(r"C:\Python\rasa_nlu\data\examples\rasa\myTestData2.json", r"C:\Python\rasa_nlu\sample_configs\config_spacy.yml", './models/nlu')
-    logging.basicConfig(level = logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG)
     mydict, strdata = run()
     ranking = getranking(mydict)
     choice = int(UserSelectIntent())
