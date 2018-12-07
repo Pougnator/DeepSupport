@@ -17,21 +17,21 @@ from rasa_nlu import config
 import json
 import logging
 from pprint import pprint
-
+model_dir = r"C:\Python\rasa_nlu\projects\default\default"
 
 def train (data, config_file, model_dir):
     training_data = load_data(data)
     configuration = config.load(config_file)
     trainer = Trainer(configuration)
     trainer.train(training_data)
-    model_directory = trainer.persist(trainer.persist(r"C:\Python\rasa_nlu\projects\default\default"))
+    model_directory = trainer.persist(model_dir, fixed_model_name = 'perifit')
 
 def run():
     status, mystring = isFromApp(readmail())
     if status==True:
         logging.info("Email from app")
     print("Loading interpreter...")
-    interpreter = Interpreter.load(r"C:\Python\rasa_nlu\projects\default\default\model_20180819-203551")
+    interpreter = Interpreter.load(r"C:\Python\rasa_nlu\projects\default\default\perifit")
     #print(interpreter.parse(mystring))
     return interpreter.parse(mystring), mystring
 
@@ -44,14 +44,18 @@ def getranking(mydict):
     
     
 if __name__ == '__main__':
-   # train(r"C:\Python\rasa_nlu\data\examples\rasa\myTestData2.json", r"C:\Python\rasa_nlu\sample_configs\config_spacy.yml", './models/nlu')
+    train(r"C:\Python\rasa_nlu\data\examples\rasa\myTestData2.json", r"C:\Python\rasa_nlu\sample_configs\config_spacy.yml", model_dir)
     logging.basicConfig(level=logging.DEBUG)
     mydict, strdata = run()
     ranking = getranking(mydict)
     choice = int(UserSelectIntent())
-    print(ranking)
-    print(type(ranking))
-    strchoice = str(ranking.pop(choice)["name"])
+    logging.debug(ranking)
+    logging.debug(type(ranking))
+    if choice == -1:
+        print("You wish to enter a new category")
+        strchoice = input("Tape the new category that fits to this email")
+    else:
+        strchoice = str(ranking.pop(choice)["name"])
     print ("You have confirmed the intent: " + strchoice)
     mylist = PrepareData(strdata, strchoice)
     AppendTrainingData(mylist)
